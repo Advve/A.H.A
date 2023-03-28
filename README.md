@@ -33,7 +33,6 @@ node index.js
 ```
 ## NOTE!
 
-This bot was just created for the memes and not every aspect might be perfect, but I believe it has a strong ground you could expand on for your own creation.
-
+This bot was just created for the Uni Project, so not everything said here must be true and could be fictional or made up!
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
