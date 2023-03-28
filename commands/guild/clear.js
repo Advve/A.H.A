@@ -23,7 +23,7 @@ module.exports = {
 		const messages = await channel.messages.fetch();
 
 		const response = new EmbedBuilder()
-			.setColor('#00ffff');
+			.setColor('#ffff00');
 
 		if (!interaction.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
 			response.setDescription('❌You do not have permission to manage messages!');

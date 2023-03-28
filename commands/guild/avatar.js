@@ -17,7 +17,7 @@ module.exports = {
 			const targetembed = new EmbedBuilder()
 				.setTitle(`${user.username} Avatar`)
 				.setImage(user.displayAvatarURL({ size: 1024, dynamic: true }))
-				.setColor('#00ffff');
+				.setColor('#ffff00');
 
 			interaction.reply({ embeds: [targetembed] });
 		}
@@ -25,7 +25,7 @@ module.exports = {
 			const interactionembed = new EmbedBuilder()
 				.setTitle(`${interaction.user.username} Avatar`)
 				.setImage(interaction.user.displayAvatarURL({ size: 1024, dynamic: true }))
-				.setColor('#00ffff');
+				.setColor('#ffff00');
 
 			interaction.reply({ embeds: [interactionembed] });
 		}

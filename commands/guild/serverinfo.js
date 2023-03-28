@@ -7,7 +7,7 @@ module.exports = {
 		.setDescription('Shows information about the server.'),
 	async execute(interaction) {
 		const serverembed = new EmbedBuilder()
-			.setColor('#00ffff')
+			.setColor('#ffff00')
 			.setTitle('Information about the server')
 			.setThumbnail(interaction.guild.iconURL())
 			.addFields(
