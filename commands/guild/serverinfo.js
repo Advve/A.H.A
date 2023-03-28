@@ -12,7 +12,7 @@ module.exports = {
 			.setThumbnail(interaction.guild.iconURL())
 			.addFields(
 				{ name: 'Name of Server:', value: `${interaction.guild.name}` },
-				{ name: 'Serwer ID:', value: `${interaction.guild.id}` },
+				{ name: 'Server ID:', value: `${interaction.guild.id}` },
 				{ name: 'Region:', value: `${interaction.guild.preferredLocale}` },
 				{ name: 'Owner of the server:', value: `<@${interaction.guild.ownerId}>` },
 				{ name: 'Creation date of the server:', value: `${interaction.guild.createdAt.toDateString()}` },
