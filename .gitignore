@@ -1,6 +1,7 @@
 # Ignore dependencies
 node_modules
 
-# Ignore user config and .env files
+# Ignore user config, .env files and other data
 .env
 config.json
+database
