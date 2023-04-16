@@ -4,4 +4,4 @@ node_modules
 # Ignore user config, .env files and other data
 .env
 config.json
-database
+bot_data.db

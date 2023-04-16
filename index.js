@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('node:path');
 const { Client, Collection, GatewayIntentBits } = require('discord.js');
+// initialization of settings
+const Settings = require('./database/settings');
 require('dotenv').config();
 
 const client = new Client({
@@ -13,21 +15,34 @@ const client = new Client({
 	],
 });
 const token = process.env.DISCORD_TOKEN;
+
+client.settings = new Settings();
 // event handler
 
 const eventsPath = path.join(__dirname, 'events');
 const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
 
+// Map for loading multiple event files with the same name inside of their scripts
+const events = new Map();
 
 for (const file of eventFiles) {
 	const filePath = path.join(eventsPath, file);
 	const event = require(filePath);
-	if (event.once) {
-		client.once(event.name, (...args) => event.execute(...args));
+
+	if (events.has(event.name)) {
+		events.get(event.name).push(event.execute);
 	}
 	else {
-		client.on(event.name, (...args) => event.execute(...args));
+		events.set(event.name, [event.execute]);
 	}
+}
+
+for (const [eventName, eventHandlers] of events) {
+	client.on(eventName, (...args) => {
+		for (const eventHandler of eventHandlers) {
+			eventHandler(...args);
+		}
+	});
 }
 // command handler
 client.commands = new Collection();

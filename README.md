@@ -6,9 +6,12 @@ Will work only on Discord.js v14!
 
 ## Features
 
-- ✅Clear command that clear up to 100 messages on a channel or of a specified user.
+- ✅Clear command that clears up to 100 messages on a channel or of a specified user.
 - ✅Server info, ping and avatar commands which doesn't need much explanation does it?
 - ✅Utilises slash commands and embeds.
+- ✅Utilises SQLite database to save settings and user roles everytime they quit or get kicked from the servers.
+- ✅Minigames: Coinflip, Dice roll and Guess the number (1-100).
+- ✅Option to turn on welcome message with a random fact of the day.
 
 ## Installation
 
@@ -25,7 +28,6 @@ Create and edit the .env file to your preferences with those required variables 
 ```bash
 DISCORD_TOKEN=
 CLIENT_ID=
-GUILD_ID=
 ```
 Start the bot with the command below in its directory:
 ```bash

@@ -1,4 +1,4 @@
-const db = require('../database_scripts/db');
+const db = require('../database/db');
 
 module.exports = {
 	name: 'guildMemberAdd',
