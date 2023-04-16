@@ -13,7 +13,7 @@ client.once('ready', async () => {
 	console.log(`Logged in as ${client.user.tag}`);
 	const guilds = client.guilds.cache.map(guild => guild.id);
 
-	// Remove guild commands for every guild the bot is on
+	// Remove guild-specific commands for every guild the bot is on
 	for (const guildId of guilds) {
 		try {
 			await rest.put(Routes.applicationGuildCommands(clientId, guildId), { body: [] });
