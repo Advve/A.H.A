@@ -95,6 +95,11 @@
     background-color: #e67e22;
   }
 
+  .github_logo{
+    width: 20px;
+    padding: 0px 5px 0 0;
+  }
+
   footer {
     position: flex;
     text-align: center;
