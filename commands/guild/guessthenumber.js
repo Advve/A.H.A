@@ -1,3 +1,4 @@
+
 // guessthenumber.js
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { EmbedBuilder } = require('discord.js');
@@ -50,11 +51,14 @@ module.exports = {
 		const userGuess = interaction.options.getInteger('guess');
 		let resultText = '';
 
-		if (userGuess === attempts.secretNumber) {
-			resultText = `Congratulations! 🎉 You guessed the secret number: **${attempts.secretNumber}**!`;
+		if (userGuess > 100 && userGuess < 0) {
+			resultText = `Sorry... But the range is 0 - 100!`;
+		}
+        else if (userGuess === attempts.secretNumber){
+            resultText = `Congratulations! 🎉 You guessed the secret number: **${attempts.secretNumber}**!`;
 			clearTimeout(attempts.timeout);
 			userAttempts.delete(userId);
-		}
+        }
 		else {
 			attempts.remainingAttempts--;
 
