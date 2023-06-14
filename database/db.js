@@ -18,6 +18,14 @@ const db = new sqlite3.Database('./bot_data.db', (err) => {
       PRIMARY KEY (guild_id, key)
     )
   `);
+	db.run(`
+    CREATE TABLE IF NOT EXISTS reminders (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id TEXT,
+      due_date INTEGER,
+      message TEXT
+    )
+  `);
 });
 
 module.exports = db;
