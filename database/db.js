@@ -33,6 +33,17 @@ const db = new sqlite3.Database('./bot_data.db', (err) => {
         PRIMARY KEY (user_id)
     )
 `);
+	db.run(`
+    CREATE TABLE IF NOT EXISTS reaction_roles (
+        guild_id TEXT,
+        channel_id TEXT,
+        message_id TEXT,
+        emoji TEXT,
+        role_id TEXT,
+        PRIMARY KEY (guild_id, channel_id, message_id, emoji)
+    )
+`);
+
 });
 
 module.exports = db;
