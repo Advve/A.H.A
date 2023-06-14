@@ -26,6 +26,13 @@ const db = new sqlite3.Database('./bot_data.db', (err) => {
       message TEXT
     )
   `);
+	db.run(`
+    CREATE TABLE IF NOT EXISTS user_xp (
+        user_id TEXT,
+        xp INTEGER,
+        PRIMARY KEY (user_id)
+    )
+`);
 });
 
 module.exports = db;
