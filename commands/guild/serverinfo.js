@@ -5,7 +5,10 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('serverinfo')
 		.setDescription('Shows information about the server.'),
+	
+	// Metoda execute jest wywoływana, gdy komenda jest uruchamiana
 	async execute(interaction) {
+		// Tworzenie embeda dla informacji o serwerze
 		const serverembed = new EmbedBuilder()
 			.setColor('#ffff00')
 			.setTitle('Information about the server')
@@ -19,6 +22,8 @@ module.exports = {
 				{ name: 'Amount of members:', value: `${interaction.guild.memberCount}` },
 				{ name: 'Amount of boosters:', value: `${interaction.guild.premiumSubscriptionCount}` },
 			);
+
+		// Odpowiedź na komendę, wysyłając embed z informacjami o serwerze
 		await interaction.reply({ embeds: [serverembed] });
 	},
 };
