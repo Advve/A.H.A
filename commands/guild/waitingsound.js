@@ -12,16 +12,19 @@ module.exports = {
 				.setDescription('The voice channel to play music in.')
 				.setRequired(true)),
 
+	// Metoda execute jest wywoływana, gdy komenda jest uruchamiana
 	async execute(interaction) {
 		const response = new EmbedBuilder()
 			.setColor('#ffff00');
 
+		// Sprawdzanie uprawnień użytkownika
 		if (!interaction.member.permissions.has(PermissionsBitField.Flags.ManageChannels)) {
 			response.setDescription('❌You do not have permission to manage channels and make the bot leave one!');
 			await interaction.reply({ embeds: [response] });
 			return;
 		}
 		else {
+			// Pobieranie wybranego kanału głosowego
 			const channel = interaction.options.getChannel('channel');
 			if (channel.type !== 2) {
 				response.setDescription('❌Selected channel is not a voice channel!');
@@ -32,30 +35,36 @@ module.exports = {
 			const channelId = channel.id;
 			const guildId = interaction.guildId;
 
+			// Tworzenie odtwarzacza audio
 			const player = createAudioPlayer();
+
+			// Tworzenie zasobu audio z pliku
 			const resource = createAudioResource(createReadStream('./resources/spining.opus'), {
 				inputType: StreamType.OggOpus,
 			});
 
+			// Rozpoczęcie odtwarzania zasobu
 			player.play(resource);
 
+			// Dołączanie do kanału głosowego
 			const connection = joinVoiceChannel({
 				channelId: channelId,
 				guildId: guildId,
 				adapterCreator: channel.guild.voiceAdapterCreator,
 			});
 
-			// eslint-disable-next-line no-unused-vars
+			// Obsługa zdarzenia rozłączenia z kanałem głosowym
 			connection.on(VoiceConnectionStatus.Disconnected, async (oldState, newState) => {
 				try {
+					// Sprawdzanie czy po rozłączeniu nastąpiło ponowne połączenie w ciągu 5 sekund
 					await Promise.race([
 						entersState(connection, VoiceConnectionStatus.Signalling, 5_000),
 						entersState(connection, VoiceConnectionStatus.Connecting, 5_000),
 					]);
-					// Seems to be reconnecting to a new channel - ignore disconnect
+					// Wygląda na to, że nastąpiło ponowne połączenie z nowym kanałem - ignoruj rozłączenie
 				}
 				catch (error) {
-					// Seems to be a real disconnect which SHOULDN'T be recovered from
+					// Wygląda na to, że to jest rzeczywiste rozłączenie, z którego NIE POWINNO się odzyskać
 					connection.destroy();
 				}
 			});
@@ -64,6 +73,8 @@ module.exports = {
 			await interaction.reply({ embeds: [response] });
 
 			const subscription = connection.subscribe(player);
+
+			// Ustalenie czasu, po którym połączenie zostanie zniszczone (np. po 7 dniach)
 			if (subscription) {
 				setTimeout(() => {
 					connection.destroy();
@@ -74,7 +85,9 @@ module.exports = {
 				console.log('Playing.');
 			});*/
 
+			// Obsługa zdarzenia zmiany statusu odtwarzacza na Idle (czyli kiedy zasób audio się skończy)
 			player.on(AudioPlayerStatus.Idle, () => {
+				// Tworzenie nowego zasobu audio i rozpoczęcie odtwarzania
 				const newResource = createAudioResource(createReadStream('./resources/spining.opus'), {
 					inputType: StreamType.OggOpus,
 				});
@@ -82,6 +95,7 @@ module.exports = {
 				// console.log('Idle.');
 			});
 
+			// Obsługa błędów odtwarzacza
 			player.on('error', error => {
 				console.log(`Error: ${error.message} with resource. Disconnecting from voice channel!`);
 				connection.destroy();
