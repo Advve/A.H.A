@@ -2,32 +2,33 @@
 const lastXpGainTimes = new Map();
 
 module.exports = {
-	name: 'messageCreate',
-	execute(message) {
-		if (!message.guild) return; // Ignore DMs
-		if (message.author.bot) return; // Ignore bot messages
+	name: 'messageCreate',// Nazwa zdarzenia, które obsługuje ten kod
+	execute(message) {// Funkcja obsługująca zdarzenie messageCreate
+		if (!message.guild) return; // // Ignorowanie wiadomości prywatnych (DMs)
+		if (message.author.bot) return; // Ignorowanie wiadomości od botów
 
-		const userId = message.author.id;
-		const now = Date.now();
-		const lastXpGainTime = lastXpGainTimes.get(userId) || 0;
-		const oneMinute = 60 * 1000;
+		const userId = message.author.id;// ID użytkownika, który wysłał wiadomość
+		const now = Date.now();// Aktualny czas
+		const lastXpGainTime = lastXpGainTimes.get(userId) || 0;// Ostatni czas zdobycia punktów doświadczenia przez użytkownika (0, jeśli brak)
+		const oneMinute = 60 * 1000;// Liczba milisekund w jednej minucie
 
 		if (now - lastXpGainTime < oneMinute) {
-			// If the user has gained XP in the last minute, don't increment their XP
+			// Jeśli użytkownik zdobył punkty doświadczenia w ciągu ostatniej minuty, nie zwiększaj jego XP
 			return;
 		}
 
-		// If the user has not gained XP in the last minute, increment their XP and update their last gain time
+		// Jeśli użytkownik nie zdobył punktów doświadczenia w ciągu ostatniej minuty,
+		// zwiększ jego XP i zaktualizuj czas ostatniego zdobycia
 		const db = require('../database/db');
 
-		// Increment XP of the user in the database by 1
+		// Zwiększanie XP użytkownika w bazie danych o 1
 		db.run(`
             INSERT INTO user_xp (user_id, xp)
             VALUES (?, COALESCE((SELECT xp FROM user_xp WHERE user_id = ?), 0) + 1)
             ON CONFLICT(user_id) DO UPDATE SET xp = excluded.xp
         `, [userId, userId], (err) => {
 			if (err) console.error(err);
-			lastXpGainTimes.set(userId, now); // Set the last XP gain time to now
+			lastXpGainTimes.set(userId, now); // Ustawienie czasu ostatniego zdobycia XP na aktualny czas
 		});
 	},
 };
