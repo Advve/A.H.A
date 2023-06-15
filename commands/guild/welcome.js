@@ -18,6 +18,7 @@ module.exports = {
 			subcommand
 				.setName('disable')
 				.setDescription('Disable welcome messages')),
+	// Metoda execute jest wywoływana, gdy komenda jest uruchamiana
 	async execute(interaction) {
 		const subcommand = interaction.options.getSubcommand();
 		const guildId = interaction.guildId;
@@ -27,22 +28,25 @@ module.exports = {
 
 		if (subcommand === 'enable') {
 			const channel = interaction.options.getChannel('channel');
+
+			// Sprawdzanie uprawnień użytkownika
 			if (!interaction.member.permissions.has(PermissionsBitField.Flags.ManageChannels)) {
 				response.setDescription('❌You do not have permission to manage channels!');
 				interaction.reply({ embeds: [response], ephemeral: true });
 				return;
 			}
-
+			// Sprawdzanie poprawności wybranego kanału
 			if (channel.type !== ChannelType.GuildText && channel.type !== ChannelType.GuildAnnouncement) {
 				response.setDescription('❌Please select a text channel!');
 				return await interaction.reply({ embeds: [response], ephemeral: true });
 			}
-
+			// Zapisywanie ID kanału powitalnego w ustawieniach bota
 			await interaction.client.settings.set(guildId, 'welcomeChannelId', channel.id);
 			response.setDescription(`✅Welcome messages are now enabled in ${channel}.`);
 			await interaction.reply({ embeds: [response], ephemeral: true });
 		}
 		else if (subcommand === 'disable') {
+			// Usuwanie ID kanału powitalnego z ustawień bota
 			await interaction.client.settings.delete(guildId, 'welcomeChannelId');
 			response.setDescription('✅Welcome messages are now disabled.');
 			await interaction.reply({ embeds: [response], ephemeral: true });
