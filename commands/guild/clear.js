@@ -25,6 +25,7 @@ module.exports = {
 		const response = new EmbedBuilder()
 			.setColor('#ffff00');
 
+		// Sprawdza, czy użytkownik ma uprawnienia do zarządzania wiadomościami
 		if (!interaction.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
 			response.setDescription('❌You do not have permission to manage messages!');
 			interaction.reply({ embeds: [response] });
@@ -38,6 +39,8 @@ module.exports = {
 		else if (user) {
 			let i = 0;
 			const filtered = [];
+
+			// Filtruje wiadomości, aby wybrać tylko te wysłane przez konkretnego użytkownika
 			(await messages).filter((m) => {
 				if (m.author.id === user.id && amount > i) {
 					filtered.push(m);
@@ -45,6 +48,7 @@ module.exports = {
 				}
 			});
 
+			// Usuwa wybrane wiadomości
 			await channel.bulkDelete(filtered, true).then(msg => {
 				response.setDescription(`🧹Cleared ${msg.size} messages sent by ${user}.`);
 				interaction.reply({ embeds: [response] });
@@ -53,6 +57,7 @@ module.exports = {
 
 		}
 		else {
+			// Usuwa określoną liczbę wiadomości
 			await channel.bulkDelete(amount, true).then(msg => {
 				response.setDescription(`🧹Cleared ${msg.size} messages in ${channel}.`);
 				interaction.reply({ embeds: [response] });
