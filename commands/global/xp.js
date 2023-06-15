@@ -8,6 +8,7 @@ module.exports = {
 	async execute(interaction) {
 		const userId = interaction.user.id;
 
+		// Pobiera informacje o punktach doświadczenia (XP) użytkownika z bazy danych
 		db.get(`
             SELECT xp FROM user_xp WHERE user_id = ?
         `, [userId], (err, row) => {
@@ -17,10 +18,13 @@ module.exports = {
 				return;
 			}
 
+			// Sprawdza, czy użytkownik ma już jakieś punkty doświadczenia
 			const xp = row ? row.xp : 0;
+			// Oblicza poziom na podstawie punktów doświadczenia
 			const level = Math.floor(0.1 * Math.sqrt(xp));
-			// This is a level formula. You can adjust this to your liking
+			// To jest przykładowa formuła poziomu. Możesz ją dostosować do swoich preferencji.
 
+			// Odpowiada na interakcję, informując użytkownika o aktualnym poziomie i liczbie punktów doświadczenia
 			interaction.reply({ content: `You are currently level ${level} and have ${xp} XP.`, ephemeral: true });
 		});
 	},
