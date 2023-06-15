@@ -19,7 +19,7 @@ module.exports = {
 
 			const xp = row ? row.xp : 0;
 			const level = Math.floor(0.1 * Math.sqrt(xp));
-			// This is an example of a level formula. You can adjust this to your liking
+			// This is a level formula. You can adjust this to your liking
 
 			interaction.reply({ content: `You are currently level ${level} and have ${xp} XP.`, ephemeral: true });
 		});

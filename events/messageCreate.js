@@ -10,7 +10,7 @@ module.exports = {
 		const userId = message.author.id;
 		const now = Date.now();
 		const lastXpGainTime = lastXpGainTimes.get(userId) || 0;
-		const oneMinute = 60 * 1000; // One minute in milliseconds
+		const oneMinute = 60 * 1000;
 
 		if (now - lastXpGainTime < oneMinute) {
 			// If the user has gained XP in the last minute, don't increment their XP
