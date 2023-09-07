@@ -1,0 +1,4 @@
+👉Multipurpose commands.
+👉Role save function.
+👉Minigames.
+👉Welcome message with a random fact.
