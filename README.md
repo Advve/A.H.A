@@ -28,6 +28,9 @@ Create and edit the .env file to your preferences with those required variables 
 ```bash
 DISCORD_TOKEN=
 CLIENT_ID=
+#optional uptime kuma monitoring
+UPTIME_KUMA_PUSH_URL=
+UPTIME_KUMA_PUSH_INTERVAL_MS=60000
 ```
 Start the bot with the command below in its directory:
 ```bash
