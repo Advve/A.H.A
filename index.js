@@ -30,17 +30,18 @@ for (const file of eventFiles) {
 	const event = require(filePath);
 
 	if (events.has(event.name)) {
-		events.get(event.name).push(event.execute);
+		events.get(event.name).handlers.push(event.execute);
 	}
 	else {
-		events.set(event.name, [event.execute]);
+		events.set(event.name, { once: event.once ?? false, handlers: [event.execute] });
 	}
 }
 
-for (const [eventName, eventHandlers] of events) {
-	client.on(eventName, (...args) => {
-		for (const eventHandler of eventHandlers) {
-			eventHandler(...args);
+for (const [eventName, { once, handlers }] of events) {
+	const method = once ? 'once' : 'on';
+	client[method](eventName, (...args) => {
+		for (const handler of handlers) {
+			handler(...args);
 		}
 	});
 }
@@ -74,6 +75,15 @@ client.on('interactionCreate', async interaction => {
 		console.error(error);
 		await interaction.reply({ content: 'There was an error while processing a command!', ephemeral: true });
 	}
+});
+
+// Prevent DNS / network blips from crashing the process
+client.on('error', (err) => {
+	console.error('[Discord] Client error:', err.message);
+});
+
+process.on('unhandledRejection', (err) => {
+	console.error('[Process] Unhandled rejection:', err);
 });
 
 client.login(token);
