@@ -1,3 +1,5 @@
+const fetch = require('node-fetch');
+
 module.exports = {
 	name: 'ready',
 	once: true,
@@ -14,5 +16,22 @@ module.exports = {
 
 		console.log(`Logged in as ${client.user.tag}!`);
 
+		// Uptime Kuma push heartbeat
+		const pushUrl = process.env.UPTIME_KUMA_PUSH_URL;
+		const pushInterval = parseInt(process.env.UPTIME_KUMA_PUSH_INTERVAL_MS) || 60000;
+
+		if (pushUrl) {
+			const sendHeartbeat = () => {
+				fetch(`${pushUrl}?status=up&msg=OK&ping=`)
+					.then(res => console.log(`[Uptime Kuma] Heartbeat sent – status ${res.status}`))
+					.catch(err => console.error('[Uptime Kuma] Heartbeat failed:', err.message));
+			};
+
+			sendHeartbeat(); // ping immediately on startup
+			setInterval(sendHeartbeat, pushInterval);
+		}
+		else {
+			console.warn('[Uptime Kuma] UPTIME_KUMA_PUSH_URL is not set – heartbeat disabled.');
+		}
 	},
 };
