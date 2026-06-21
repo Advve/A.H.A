@@ -1,5 +1,4 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { EmbedBuilder, PermissionsBitField } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, PermissionsBitField, MessageFlags } = require('discord.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -16,48 +15,43 @@ module.exports = {
 
 	async execute(interaction) {
 		const { channel, options } = interaction;
-
-		const user = options.getMember('user');
-		const amount = options.getNumber('number');
-
-		const messages = await channel.messages.fetch();
-
 		const response = new EmbedBuilder()
 			.setColor('#ffff00');
 
 		if (!interaction.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
 			response.setDescription('❌You do not have permission to manage messages!');
-			interaction.reply({ embeds: [response] });
-			return;
+			return interaction.reply({ embeds: [response], flags: MessageFlags.Ephemeral });
 		}
-		else if (amount > 100) {
+
+		const amount = options.getNumber('number');
+		if (amount > 100) {
 			response.setDescription('❌Can\'t clear more than 100 messages at once!');
-			interaction.reply({ embeds: [response] });
-			return;
+			return interaction.reply({ embeds: [response], flags: MessageFlags.Ephemeral });
 		}
-		else if (user) {
-			let i = 0;
+
+		await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+
+		const user = options.getMember('user');
+		let deleted;
+
+		if (user) {
+			const messages = await channel.messages.fetch();
 			const filtered = [];
-			(await messages).filter((m) => {
-				if (m.author.id === user.id && amount > i) {
-					filtered.push(m);
+			let i = 0;
+			for (const message of messages.values()) {
+				if (message.author.id === user.id && i < amount) {
+					filtered.push(message);
 					i++;
 				}
-			});
-
-			await channel.bulkDelete(filtered, true).then(msg => {
-				response.setDescription(`🧹Cleared ${msg.size} messages sent by ${user}.`);
-				interaction.reply({ embeds: [response] });
-				setTimeout(() => interaction.deleteReply(), 10000);
-			});
-
+			}
+			deleted = await channel.bulkDelete(filtered, true);
+			response.setDescription(`🧹Cleared ${deleted.size} messages sent by ${user}.`);
 		}
 		else {
-			await channel.bulkDelete(amount, true).then(msg => {
-				response.setDescription(`🧹Cleared ${msg.size} messages in ${channel}.`);
-				interaction.reply({ embeds: [response] });
-				setTimeout(() => interaction.deleteReply(), 10000);
-			});
+			deleted = await channel.bulkDelete(amount, true);
+			response.setDescription(`🧹Cleared ${deleted.size} messages in ${channel}.`);
 		}
+
+		await interaction.editReply({ embeds: [response] });
 	},
 };

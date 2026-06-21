@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('node:path');
-const { Client, Collection, GatewayIntentBits } = require('discord.js');
+const { Client, Collection, GatewayIntentBits, MessageFlags } = require('discord.js');
 // initialization of settings
 const Settings = require('./database/settings');
 require('dotenv').config();
@@ -73,7 +73,18 @@ client.on('interactionCreate', async interaction => {
 	}
 	catch (error) {
 		console.error(error);
-		await interaction.reply({ content: 'There was an error while processing a command!', ephemeral: true });
+		const errorMessage = { content: 'There was an error while processing a command!', flags: MessageFlags.Ephemeral };
+		try {
+			if (interaction.replied || interaction.deferred) {
+				await interaction.followUp(errorMessage);
+			}
+			else {
+				await interaction.reply(errorMessage);
+			}
+		}
+		catch (replyError) {
+			console.error('[Discord] Failed to send error response:', replyError.message);
+		}
 	}
 });
 

@@ -1,7 +1,5 @@
-const fetch = require('node-fetch');
-
 module.exports = {
-	name: 'ready',
+	name: 'clientReady',
 	once: true,
 	execute(client) {
 		const activities = [
@@ -27,7 +25,8 @@ module.exports = {
 					.catch(err => console.error('[Uptime Kuma] Heartbeat failed:', err.message));
 			};
 
-			sendHeartbeat(); // ping immediately on startup
+			// ping immediately on startup
+			sendHeartbeat();
 			setInterval(sendHeartbeat, pushInterval);
 		}
 		else {

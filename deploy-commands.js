@@ -1,8 +1,6 @@
 const fs = require('node:fs');
 const path = require('node:path');
-const { REST } = require('@discordjs/rest');
-const { Routes } = require('discord.js');
-const { Client, GatewayIntentBits } = require('discord.js');
+const { REST, Routes, Client, GatewayIntentBits } = require('discord.js');
 require('dotenv').config();
 const clientId = process.env.CLIENT_ID,
 	token = process.env.DISCORD_TOKEN;
@@ -31,7 +29,7 @@ for (const file of guildCommandFiles) {
 const rest = new REST({ version: '10' }).setToken(token);
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
-client.once('ready', async () => {
+client.once('clientReady', async () => {
 	console.log(`Logged in as ${client.user.tag}`);
 	const guilds = client.guilds.cache.map(guild => guild.id);
 

@@ -1,5 +1,4 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { EmbedBuilder, ChannelType, PermissionsBitField } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ChannelType, PermissionsBitField, MessageFlags } = require('discord.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -29,23 +28,23 @@ module.exports = {
 			const channel = interaction.options.getChannel('channel');
 			if (!interaction.member.permissions.has(PermissionsBitField.Flags.ManageChannels)) {
 				response.setDescription('❌You do not have permission to manage channels!');
-				interaction.reply({ embeds: [response], ephemeral: true });
+				interaction.reply({ embeds: [response], flags: MessageFlags.Ephemeral });
 				return;
 			}
 
 			if (channel.type !== ChannelType.GuildText && channel.type !== ChannelType.GuildAnnouncement) {
 				response.setDescription('❌Please select a text channel!');
-				return await interaction.reply({ embeds: [response], ephemeral: true });
+				return await interaction.reply({ embeds: [response], flags: MessageFlags.Ephemeral });
 			}
 
 			await interaction.client.settings.set(guildId, 'welcomeChannelId', channel.id);
 			response.setDescription(`✅Welcome messages are now enabled in ${channel}.`);
-			await interaction.reply({ embeds: [response], ephemeral: true });
+			await interaction.reply({ embeds: [response], flags: MessageFlags.Ephemeral });
 		}
 		else if (subcommand === 'disable') {
 			await interaction.client.settings.delete(guildId, 'welcomeChannelId');
 			response.setDescription('✅Welcome messages are now disabled.');
-			await interaction.reply({ embeds: [response], ephemeral: true });
+			await interaction.reply({ embeds: [response], flags: MessageFlags.Ephemeral });
 		}
 	},
 };

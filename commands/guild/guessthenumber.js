@@ -1,5 +1,4 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
 
 const userAttempts = new Map();
 
@@ -40,14 +39,14 @@ module.exports = {
 				.setTitle('Guess the Number')
 				.setDescription('Your guess is out of range! Please enter a number between 1 and 100.')
 				.setColor('#ffff00');
-			return interaction.reply({ embeds: [errorEmbed], ephemeral: true });
+			return interaction.reply({ embeds: [errorEmbed], flags: MessageFlags.Ephemeral });
 		}
 
 		if (!userAttempts.has(userId)) {
 			attempts = {
 				secretNumber: generateSecretNumber(),
 				remainingAttempts: 5,
-				timeout: setTimeout(() => deleteUserGame(userId, interaction), 30000),
+				timeout: setTimeout(() => deleteUserGame(userId, interaction), 60000),
 			};
 			userAttempts.set(userId, attempts);
 		}
@@ -83,6 +82,6 @@ module.exports = {
 			.setDescription(resultText)
 			.setColor('#ffff00');
 
-		await interaction.reply({ embeds: [embed], fetchReply: true });
+		await interaction.reply({ embeds: [embed] });
 	},
 };

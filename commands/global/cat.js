@@ -1,6 +1,4 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { EmbedBuilder } = require('discord.js');
-const fetch = require('node-fetch');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -8,15 +6,23 @@ module.exports = {
 		.setDescription('Sends a random cat.'),
 
 	async execute(interaction) {
-		const response = await fetch('https://api.thecatapi.com/v1/images/search');
-		const data = await response.json();
-		const image = data[0].url;
+		await interaction.deferReply();
 
-		const catembed = new EmbedBuilder()
-			.setTitle('Random Cat Image')
-			.setImage(image)
-			.setColor('#ffff00');
+		try {
+			const response = await fetch('https://api.thecatapi.com/v1/images/search');
+			const data = await response.json();
+			const image = data[0].url;
 
-		interaction.reply({ embeds: [catembed] });
+			const catembed = new EmbedBuilder()
+				.setTitle('Random Cat Image')
+				.setImage(image)
+				.setColor('#ffff00');
+
+			await interaction.editReply({ embeds: [catembed] });
+		}
+		catch (error) {
+			console.error('Error fetching cat image:', error);
+			await interaction.editReply('😿Could not fetch a cat right now, please try again later.');
+		}
 	},
 };
