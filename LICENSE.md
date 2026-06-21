@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2022 Not a Corporation Incorporated
+Copyright (c) 2026 Adve
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
