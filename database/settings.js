@@ -1,34 +1,26 @@
 const db = require('./db');
 
 class Settings {
-	async set(guildId, key, value) {
-		await db.run(`
+	set(guildId, key, value) {
+		db.prepare(`
             INSERT OR REPLACE INTO settings (guild_id, key, value)
             VALUES (?, ?, ?)
-        `, [guildId, key, value]);
+        `).run(guildId, key, value);
 	}
 
-	async get(guildId, key) {
-		return new Promise((resolve, reject) => {
-			db.get(`
-                SELECT value FROM settings
-                WHERE guild_id = ? AND key = ?
-            `, [guildId, key], (err, row) => {
-				if (err) {
-					reject(err);
-				}
-				else {
-					resolve(row ? row.value : null);
-				}
-			});
-		});
+	get(guildId, key) {
+		const row = db.prepare(`
+            SELECT value FROM settings
+            WHERE guild_id = ? AND key = ?
+        `).get(guildId, key);
+		return row ? row.value : null;
 	}
 
-	async delete(guildId, key) {
-		await db.run(`
+	delete(guildId, key) {
+		db.prepare(`
             DELETE FROM settings
             WHERE guild_id = ? AND key = ?
-        `, [guildId, key]);
+        `).run(guildId, key);
 	}
 }
 
